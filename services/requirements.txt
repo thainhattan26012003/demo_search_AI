@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic-settings
+requests
+python-dotenv
+pydantic[email]
+pandas
+qdrant-client
+sentence-transformers
+python-multipart
+faker

@@ -1,0 +1,56 @@
+services:
+  demo_search:
+    build:
+      context: ./services
+      dockerfile: Dockerfile
+    container_name: demo_search
+    ports:
+      - "8123:8123"
+    volumes:
+      - .:/workspace
+      - ./services:/app
+      - ./logs:/app/logs
+    environment:
+      - ENVIRONMENT=development
+    command: uvicorn main:app --host 0.0.0.0 --port 8123 --reload
+    ## auto start bash for debugging
+    #command: /bin/bash
+    stdin_open: true  # equivalent to docker run -i
+    tty: true        # equivalent to docker run -t
+    depends_on:
+      - embed_model_demo
+    networks:
+      - mynetwork
+
+  embed_model_demo:
+    build:
+      context: ./embeddings
+      dockerfile: Dockerfile
+    container_name: embed_model_demo
+    environment:
+      - HUGGING_FACE_ACCESS_TOKEN=${HF_ACCESS_TOKEN}
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./embeddings/huggingface_cache:/root/.cache/huggingface
+      - ./embeddings:/app
+      - ./logs:/app/logs
+      - .:/workspace
+    ipc: host
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8088
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    networks:
+      - mynetwork
+
+
+networks:
+  mynetwork:
+    driver: bridge

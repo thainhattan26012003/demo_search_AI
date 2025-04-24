@@ -1,0 +1,15 @@
+embeddings/__pycache__
+embeddings/huggingface_cache
+embeddings/logs
+embeddings/.env
+embeddings/.dockerignore
+
+services/__pycache__
+services/data_types/__pycache__
+services/database/__pycache__
+services/logs
+services/models/__pycache__
+services/routes/__pycache__
+services/utils/__pycache__
+services/.env
+services/.dockerignore
